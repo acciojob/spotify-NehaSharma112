@@ -332,11 +332,15 @@ public class SpotifyRepository {
         }
 
         //check if the user is already associated with that song or not in HashMap<Song, List<User>> songLikeMap;
+        if(!songLikeMap.containsKey(song1)){//if song1 is not already liked then it will be liked for the first time
+            songLikeMap.put(song1,new ArrayList<>());
+        }
+
+        //add user
         if(songLikeMap.get(song1).contains(user1)){
             return song1;//return if user already exist
         }
 
-        //add user
         songLikeMap.get(song1).add(user1);
 
 
@@ -354,6 +358,11 @@ public class SpotifyRepository {
                 break;
             }
         }
+
+        if (albumContainsSong == null) {
+            throw new Exception("Album containing the song not found");
+        }
+
         // now we have that album which has the given(ip) song
         //now will get artist from HashMap<Artist, List<Album>> artistAlbumMap
         Artist artistOfCurrentSong = null;
@@ -367,6 +376,10 @@ public class SpotifyRepository {
             }
         }
 
+        if (artistOfCurrentSong == null) {
+            throw new Exception("Artist for the song not found");
+        }
+        
         // now we have artist of ip song in artistOfCurrentSong so will increase the like count of artist also
         artistOfCurrentSong.setLikes(artistOfCurrentSong.getLikes()+1);
 
