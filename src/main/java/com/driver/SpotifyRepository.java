@@ -241,19 +241,6 @@ public class SpotifyRepository {
 //        public HashMap<User, List<Playlist>> userPlaylistMap;
 //        public HashMap<Song, List<User>> songLikeMap;
 
-//      Find the playlist with given title
-        Playlist playlist1 = null;
-        for(Playlist p:playlists){
-            if(p.getTitle().equals(playlistTitle)){
-                playlist1 = p;
-                break;
-            }
-        }
-
-        if(playlist1==null){
-            throw new Exception("Playlist does not exist");
-        }
-
         //Find the playlist with given title and /// add user as listener of that playlist
         User listener = null;
         for(User u:users){
@@ -267,6 +254,21 @@ public class SpotifyRepository {
         if(listener==null){
             throw new Exception("User does not exist");
         }
+        
+//      Find the playlist with given title
+        Playlist playlist1 = null;
+        for(Playlist p:playlists){
+            if(p.getTitle().equals(playlistTitle)){
+                playlist1 = p;
+                break;
+            }
+        }
+
+        if(playlist1==null){
+            throw new Exception("Playlist does not exist");
+        }
+
+
 
         if(userPlaylistMap.containsKey(listener)) {
             userPlaylistMap.get(listener).add(playlist1);
