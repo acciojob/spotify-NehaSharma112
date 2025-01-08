@@ -379,7 +379,7 @@ public class SpotifyRepository {
         if (artistOfCurrentSong == null) {
             throw new Exception("Artist for the song not found");
         }
-        
+
         // now we have artist of ip song in artistOfCurrentSong so will increase the like count of artist also
         artistOfCurrentSong.setLikes(artistOfCurrentSong.getLikes()+1);
 
@@ -388,7 +388,7 @@ public class SpotifyRepository {
     }
 
     public String mostPopularArtist() {
-        Artist mostLikedArtist = null;
+        Artist mostLikedArtist = new Artist();
         int maxLikes=0;
 
         for(Artist a: artists){
@@ -398,7 +398,10 @@ public class SpotifyRepository {
             }
         }
 
-        if(mostLikedArtist == null) return "";
+
+//        if(mostLikedArtist == null) {
+//            return "";
+//        }
         return mostLikedArtist.getName();
 
     }
