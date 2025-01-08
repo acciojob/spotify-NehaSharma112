@@ -388,7 +388,7 @@ public class SpotifyRepository {
     }
 
     public String mostPopularArtist() {
-        Artist mostLikedArtist = new Artist();
+        Artist mostLikedArtist = null;
         int maxLikes=0;
 
         for(Artist a: artists){
@@ -399,9 +399,9 @@ public class SpotifyRepository {
         }
 
 
-//        if(mostLikedArtist == null) {
-//            return "";
-//        }
+        if(mostLikedArtist == null) {
+            return "";
+        }
         return mostLikedArtist.getName();
 
     }
