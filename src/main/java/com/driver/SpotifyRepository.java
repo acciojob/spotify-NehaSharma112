@@ -267,6 +267,7 @@ public class SpotifyRepository {
         if(listener==null){
             throw new Exception("User does not exist");
         }
+
         if(userPlaylistMap.containsKey(listener)) {
             userPlaylistMap.get(listener).add(playlist1);
         }else{
@@ -275,20 +276,35 @@ public class SpotifyRepository {
             userPlaylistMap.put(listener,listPlaylist);
         }
 
-        if(playlistListenerMap.containsKey(playlist1)) {
-            List<User> listeners = playlistListenerMap.get(playlist1);
-            //cond to check if listener is already part of playlistListenerMap & part of creatorPlaylistMap
-            //if not then will have to add if already exists then do nothing
-            //!creatorPlaylistMap.getOrDefault(listener,new Playlist()).equals(playlist1) checks if that listener has mapped that playlist1
-            if (!listeners.contains(listener) && !creatorPlaylistMap.getOrDefault(listener,new Playlist()).equals(playlist1)) {
-                //if already exists then do nothing
-                listeners.add(listener);
-            }
-        }else{
-            List<User> listeners = new ArrayList<>();
-            listeners.add(listener);
-            playlistListenerMap.put(playlist1,listeners);
+        //if user is a creator, directly return currPlaylist
+        if(creatorPlaylistMap.containsKey(listener)){
+            return playlist1;
         }
+
+//        //add playlist against currUser in userPlaylistMap
+//        userPlaylistMap.get(listener).add(playlist1);
+
+        //add user to playlistListerMap
+        if(playlistListenerMap.containsKey(playlist1)){
+            if(!playlistListenerMap.get(playlist1).contains(listener)){
+                playlistListenerMap.get(playlist1).add(listener);
+            }
+        }
+
+//        if(playlistListenerMap.containsKey(playlist1)) {
+//            List<User> listeners = playlistListenerMap.get(playlist1);
+//            //cond to check if listener is already part of playlistListenerMap & part of creatorPlaylistMap
+//            //if not then will have to add if already exists then do nothing
+//            //!creatorPlaylistMap.getOrDefault(listener,new Playlist()).equals(playlist1) checks if that listener has mapped that playlist1
+//            if (!listeners.contains(listener) && !creatorPlaylistMap.getOrDefault(listener,new Playlist()).equals(playlist1)) {
+//                //if already exists then do nothing
+//                listeners.add(listener);
+//            }
+//        }else{
+//            List<User> listeners = new ArrayList<>();
+//            listeners.add(listener);
+//            playlistListenerMap.put(playlist1,listeners);
+//        }
 
 
         return playlist1;
