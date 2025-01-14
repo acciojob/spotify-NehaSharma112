@@ -182,6 +182,20 @@ public class SpotifyRepository {
 //        public HashMap<User, Playlist> creatorPlaylistMap;            done
 //        public HashMap<User, List<Playlist>> userPlaylistMap;         done
 //        public HashMap<Song, List<User>> songLikeMap;
+        User user1 = null;
+        for(User u : users){
+            if(u.getMobile().equals(mobile)){
+                user1 = u;
+                break;
+            }
+        }
+
+        //If the user does not exist, throw "User does not exist" exception
+        if(user1==null){
+            throw new Exception("User does not exist");
+        }
+
+
         Playlist playlist1 = new Playlist();
         playlist1.setTitle(title);
 
@@ -195,18 +209,7 @@ public class SpotifyRepository {
         }
         playlistSongMap.put(playlist1,matchedSong);
 
-        User user1 = null;
-        for(User u : users){
-            if(u.getMobile().equals(mobile)){
-                user1 = u;
-                break;
-            }
-        }
 
-        //If the user does not exist, throw "User does not exist" exception
-        if(user1==null){
-            throw new Exception("User does not exist");
-        }
 
         creatorPlaylistMap.put(user1,playlist1);
 
