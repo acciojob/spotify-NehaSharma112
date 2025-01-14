@@ -213,7 +213,7 @@ public class SpotifyRepository {
         playlistListenerMap.put(playlist1,new ArrayList<>());
         playlistListenerMap.get(playlist1).add(user1);
 
-        userPlaylistMap.put((user1,new ArrayList<>());
+        userPlaylistMap.put(user1,new ArrayList<>());
         userPlaylistMap.get(user1).add(playlist1);
 
         return playlist1;
