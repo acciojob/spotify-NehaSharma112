@@ -215,13 +215,13 @@ public class SpotifyRepository {
         playlistListenerMap.put(playlist1,listener);
 
 
-        if(userPlaylistMap.containsKey(user1)){//if user1 already exist then will append/add it
-            userPlaylistMap.get(user1).add(playlist1);
-        }else {
+//        if(userPlaylistMap.containsKey(user1)){//if user1 already exist then will append/add it
+//            userPlaylistMap.get(user1).add(playlist1);
+//        }else {
             List<Playlist> playlistList = new ArrayList<>();
             playlistList.add(playlist1);
             userPlaylistMap.put(user1, playlistList);
-        }
+//        }
 
         return playlist1;
 
