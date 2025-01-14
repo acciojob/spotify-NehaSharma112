@@ -147,23 +147,20 @@ public class SpotifyRepository {
         }
         creatorPlaylistMap.put(user1,playlist_);
 
+        //add list<songs> which have same length with key as playlist
+        playlistSongMap.put(playlist_,new ArrayList<>());
         for(Song s:songs){
             if(s.getLength()==length){
-                songsWithSameLength.add(s);
+                playlistSongMap.get(playlist_).add(s);
             }
         }
-        if(songsWithSameLength.isEmpty()){
-            throw new Exception("No songs found with the given length: "+length);
-        }
-        //add list<songs> which have same length with key as playlist
-        playlistSongMap.put(playlist_,songsWithSameLength);
 
         //playlistListenerMap
         ArrayList<User> listeners = new ArrayList<>();
         listeners.add(user1);
         playlistListenerMap.put(playlist_,listeners);
 
-
+//        userPlaylistMap.get(user1).add(playlist_);
 
         if(userPlaylistMap.containsKey(user1)){
             userPlaylistMap.get(user1).add(playlist_);
@@ -254,7 +251,7 @@ public class SpotifyRepository {
         if(listener==null){
             throw new Exception("User does not exist");
         }
-        
+
 //      Find the playlist with given title
         Playlist playlist1 = null;
         for(Playlist p:playlists){
