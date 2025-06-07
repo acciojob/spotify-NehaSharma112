@@ -52,7 +52,7 @@ public class SpotifyRepository {
     }
 
     public Artist createArtist(String name) {
-
+        Artist artist = new Artist();
         artist.setName(name);
         artists.add(artist);
         return artist;
@@ -98,7 +98,7 @@ public class SpotifyRepository {
         Song song1 = new Song();
         song1.setTitle(title);
         song1.setLength(length);
-        songs.add(song1);
+//        songs.add(song1);
         Album album1 = null;
 //        albumSongMap.put(Album,list<Song>)
         for(Album alb:albums){
@@ -334,6 +334,10 @@ public class SpotifyRepository {
         }
 
         //check if the user is already associated with that song or not in HashMap<Song, List<User>> songLikeMap;
+        //if doesn't exist alrady then add new list
+        if(!songLikeMap.containsKey(song1)){
+            songLikeMap.put(new ArrayList<>());
+        }
         if(songLikeMap.get(song1).contains(user1)){
             return song1;//return if user already exist
         }
