@@ -336,7 +336,7 @@ public class SpotifyRepository {
         //check if the user is already associated with that song or not in HashMap<Song, List<User>> songLikeMap;
         //if doesn't exist alrady then add new list
         if(!songLikeMap.containsKey(song1)){
-            songLikeMap.put(new ArrayList<>());
+            songLikeMap.put(song1,new ArrayList<User>());
         }
         if(songLikeMap.get(song1).contains(user1)){
             return song1;//return if user already exist
