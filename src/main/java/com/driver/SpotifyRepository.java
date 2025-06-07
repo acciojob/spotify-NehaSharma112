@@ -147,20 +147,23 @@ public class SpotifyRepository {
         }
         creatorPlaylistMap.put(user1,playlist_);
 
-        //add list<songs> which have same length with key as playlist
-        playlistSongMap.put(playlist_,new ArrayList<>());
         for(Song s:songs){
             if(s.getLength()==length){
-                playlistSongMap.get(playlist_).add(s);
+                songsWithSameLength.add(s);
             }
         }
+        if(songsWithSameLength.isEmpty()){
+            throw new Exception("No songs found with the given length: "+length);
+        }
+        //add list<songs> which have same length with key as playlist
+        playlistSongMap.put(playlist_,songsWithSameLength);
 
         //playlistListenerMap
         ArrayList<User> listeners = new ArrayList<>();
         listeners.add(user1);
         playlistListenerMap.put(playlist_,listeners);
 
-//        userPlaylistMap.get(user1).add(playlist_);
+
 
         if(userPlaylistMap.containsKey(user1)){
             userPlaylistMap.get(user1).add(playlist_);
@@ -182,6 +185,19 @@ public class SpotifyRepository {
 //        public HashMap<User, Playlist> creatorPlaylistMap;            done
 //        public HashMap<User, List<Playlist>> userPlaylistMap;         done
 //        public HashMap<Song, List<User>> songLikeMap;
+        Playlist playlist1 = new Playlist();
+        playlist1.setTitle(title);
+
+        List<Song> matchedSong = new ArrayList<>();
+        for(Song s:songs){
+            for(int i=0;i<songTitles.size();i++) {
+                if (s.getTitle().equals(songTitles.get(i))){
+                    matchedSong.add(s);
+                }
+            }
+        }
+        playlistSongMap.put(playlist1,matchedSong);
+
         User user1 = null;
         for(User u : users){
             if(u.getMobile().equals(mobile)){
@@ -195,28 +211,25 @@ public class SpotifyRepository {
             throw new Exception("User does not exist");
         }
 
-
-        Playlist playlist1 = new Playlist();
-        playlist1.setTitle(title);
-
-        playlistSongMap.put(playlist1,new ArrayList<>());
-        for(Song s:songs){
-            for(int i=0;i<songTitles.size();i++) {
-                if (s.getTitle().equals(songTitles.get(i))){
-                    playlistSongMap.get(playlist1).add(s);
-                }
-            }
-        }
-
         creatorPlaylistMap.put(user1,playlist1);
 
-        playlistListenerMap.put(playlist1,new ArrayList<>());
-        playlistListenerMap.get(playlist1).add(user1);
+        List<User> listener = new ArrayList<>();
+        listener.add(user1);
+        playlistListenerMap.put(playlist1,listener);
 
-        userPlaylistMap.put(user1,new ArrayList<>());
-        userPlaylistMap.get(user1).add(playlist1);
+
+        if(userPlaylistMap.containsKey(user1)){//if user1 already exist then will append/add it
+            userPlaylistMap.get(user1).add(playlist1);
+        }else {
+            List<Playlist> playlistList = new ArrayList<>();
+            playlistList.add(playlist1);
+            userPlaylistMap.put(user1, playlistList);
+        }
+
+        playlists.add(playlist1);
 
         return playlist1;
+
     }
 
     public Playlist findPlaylist(String mobile, String playlistTitle) throws Exception {
@@ -229,20 +242,6 @@ public class SpotifyRepository {
 //        public HashMap<User, Playlist> creatorPlaylistMap;
 //        public HashMap<User, List<Playlist>> userPlaylistMap;
 //        public HashMap<Song, List<User>> songLikeMap;
-
-        //Find the playlist with given title and /// add user as listener of that playlist
-        User listener = null;
-        for(User u:users){
-            if(u.getMobile().equals(mobile)){
-                listener = u;
-                break;
-            }
-        }
-
-        //If the user does not exist, throw "User does not exist" exception
-        if(listener==null){
-            throw new Exception("User does not exist");
-        }
 
 //      Find the playlist with given title
         Playlist playlist1 = null;
@@ -257,8 +256,19 @@ public class SpotifyRepository {
             throw new Exception("Playlist does not exist");
         }
 
+        //Find the playlist with given title and /// add user as listener of that playlist
+        User listener = null;
+        for(User u:users){
+            if(u.getMobile().equals(mobile)){
+                listener = u;
+                break;
+            }
+        }
 
-
+        //If the user does not exist, throw "User does not exist" exception
+        if(listener==null){
+            throw new Exception("User does not exist");
+        }
         if(userPlaylistMap.containsKey(listener)) {
             userPlaylistMap.get(listener).add(playlist1);
         }else{
@@ -267,35 +277,20 @@ public class SpotifyRepository {
             userPlaylistMap.put(listener,listPlaylist);
         }
 
-        //if user is a creator, directly return currPlaylist
-        if(creatorPlaylistMap.containsKey(listener)){
-            return playlist1;
-        }
-
-//        //add playlist against currUser in userPlaylistMap
-//        userPlaylistMap.get(listener).add(playlist1);
-
-        //add user to playlistListerMap
-        if(playlistListenerMap.containsKey(playlist1)){
-            if(!playlistListenerMap.get(playlist1).contains(listener)){
-                playlistListenerMap.get(playlist1).add(listener);
+        if(playlistListenerMap.containsKey(playlist1)) {
+            List<User> listeners = playlistListenerMap.get(playlist1);
+            //cond to check if listener is already part of playlistListenerMap & part of creatorPlaylistMap
+            //if not then will have to add if already exists then do nothing
+            //!creatorPlaylistMap.getOrDefault(listener,new Playlist()).equals(playlist1) checks if that listener has mapped that playlist1
+            if (!listeners.contains(listener) && !creatorPlaylistMap.getOrDefault(listener,new Playlist()).equals(playlist1)) {
+                //if already exists then do nothing
+                listeners.add(listener);
             }
+        }else{
+            List<User> listeners = new ArrayList<>();
+            listeners.add(listener);
+            playlistListenerMap.put(playlist1,listeners);
         }
-
-//        if(playlistListenerMap.containsKey(playlist1)) {
-//            List<User> listeners = playlistListenerMap.get(playlist1);
-//            //cond to check if listener is already part of playlistListenerMap & part of creatorPlaylistMap
-//            //if not then will have to add if already exists then do nothing
-//            //!creatorPlaylistMap.getOrDefault(listener,new Playlist()).equals(playlist1) checks if that listener has mapped that playlist1
-//            if (!listeners.contains(listener) && !creatorPlaylistMap.getOrDefault(listener,new Playlist()).equals(playlist1)) {
-//                //if already exists then do nothing
-//                listeners.add(listener);
-//            }
-//        }else{
-//            List<User> listeners = new ArrayList<>();
-//            listeners.add(listener);
-//            playlistListenerMap.put(playlist1,listeners);
-//        }
 
 
         return playlist1;
@@ -339,15 +334,11 @@ public class SpotifyRepository {
         }
 
         //check if the user is already associated with that song or not in HashMap<Song, List<User>> songLikeMap;
-        if(!songLikeMap.containsKey(song1)){//if song1 is not already liked then it will be liked for the first time
-            songLikeMap.put(song1,new ArrayList<>());
-        }
-
-        //add user
         if(songLikeMap.get(song1).contains(user1)){
             return song1;//return if user already exist
         }
 
+        //add user
         songLikeMap.get(song1).add(user1);
 
 
@@ -365,11 +356,6 @@ public class SpotifyRepository {
                 break;
             }
         }
-
-        if (albumContainsSong == null) {
-            throw new Exception("Album containing the song not found");
-        }
-
         // now we have that album which has the given(ip) song
         //now will get artist from HashMap<Artist, List<Album>> artistAlbumMap
         Artist artistOfCurrentSong = null;
@@ -381,10 +367,6 @@ public class SpotifyRepository {
                 artistOfCurrentSong = currArtist;
                 break;
             }
-        }
-
-        if (artistOfCurrentSong == null) {
-            throw new Exception("Artist for the song not found");
         }
 
         // now we have artist of ip song in artistOfCurrentSong so will increase the like count of artist also
@@ -405,10 +387,7 @@ public class SpotifyRepository {
             }
         }
 
-
-        if(mostLikedArtist == null) {
-            return "";
-        }
+        if(mostLikedArtist == null) return "";
         return mostLikedArtist.getName();
 
     }
